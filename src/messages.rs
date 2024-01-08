@@ -145,6 +145,17 @@ pub type TickerResponse = HashMap<String, AssetTickerInfo>;
 /// Type alias for response of Balance API call
 pub type BalanceResponse = HashMap<String, Decimal>;
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ExtendedBalance {
+    pub balance: Decimal,
+    pub credit: Option<Decimal>,
+    pub credit_used: Option<Decimal>,
+    pub hold_trade: Decimal,
+}
+
+/// Type alias for response of Balance API call
+pub type ExtendedBalanceResponse = HashMap<String, ExtendedBalance>;
+
 /// TxId are represented as String's in kraken json api
 pub type TxId = String;
 

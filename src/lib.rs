@@ -13,9 +13,9 @@ use messages::{
 };
 pub use messages::{
     AddOrderResponse, AssetPairsResponse, AssetTickerInfo, AssetsResponse, BalanceResponse, BsType,
-    CancelAllOrdersAfterResponse, CancelAllOrdersResponse, CancelOrderResponse, GetOpenOrdersResponse,
-    GetWebSocketsTokenResponse, OrderAdded, OrderFlag, OrderInfo, OrderStatus, OrderType, SystemStatusResponse,
-    TickerResponse, TimeResponse, TxId, UserRefId,
+    CancelAllOrdersAfterResponse, CancelAllOrdersResponse, CancelOrderResponse, ExtendedBalanceResponse,
+    GetOpenOrdersResponse, GetWebSocketsTokenResponse, OrderAdded, OrderFlag, OrderInfo, OrderStatus, OrderType,
+    SystemStatusResponse, TickerResponse, TimeResponse, TxId, UserRefId,
 };
 
 use core::convert::TryFrom;
@@ -103,6 +103,12 @@ impl KrakenRestAPI {
     /// (Private) Get the balance
     pub fn get_account_balance(&self) -> Result<BalanceResponse> {
         let result: Result<KrakenResult<BalanceResponse>> = self.client.query_private("Balance", Empty {});
+        result.and_then(unpack_kraken_result)
+    }
+
+    /// (Private) Get the balance
+    pub fn get_extended_balance(&self) -> Result<ExtendedBalanceResponse> {
+        let result: Result<KrakenResult<ExtendedBalanceResponse>> = self.client.query_private("BalanceEx", Empty {});
         result.and_then(unpack_kraken_result)
     }
 
