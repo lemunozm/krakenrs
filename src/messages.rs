@@ -124,6 +124,7 @@ pub type AssetPairsResponse = HashMap<String, AssetPair>;
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct TickerRequest {
     /// A comma-separated list of kraken asset pair strings
+    #[serde(skip_serializing_if = "String::is_empty")]
     pub pair: String,
 }
 
