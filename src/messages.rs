@@ -338,6 +338,21 @@ pub struct GetOpenOrdersResponse {
     pub open: HashMap<TxId, OrderInfo>,
 }
 
+/// Get open orders request
+#[derive(Default, Debug, Serialize, Deserialize)]
+pub struct QueryOrdersRequest {
+    /// restrict results to given user reference id (optional)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub userref: Option<UserRefId>,
+
+    /// List of order ids to query
+    #[serde(with = "serde_with::rust::StringWithSeparator::<CommaSeparator>")]
+    pub txid: Vec<TxId>,
+}
+
+/// Type alias for response of QueryOrders API call
+pub type QueryOrdersResponse = HashMap<TxId, OrderInfo>;
+
 /// Cancel order request
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct CancelOrderRequest {

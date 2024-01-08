@@ -15,7 +15,7 @@ pub use messages::{
     AddOrderResponse, AssetPairsResponse, AssetTickerInfo, AssetsResponse, BalanceResponse, BsType,
     CancelAllOrdersAfterResponse, CancelAllOrdersResponse, CancelOrderResponse, ExtendedBalanceResponse,
     GetOpenOrdersResponse, GetWebSocketsTokenResponse, OrderAdded, OrderFlag, OrderInfo, OrderStatus, OrderType,
-    SystemStatusResponse, TickerResponse, TimeResponse, TxId, UserRefId,
+    QueryOrdersRequest, QueryOrdersResponse, SystemStatusResponse, TickerResponse, TimeResponse, TxId, UserRefId,
 };
 
 use core::convert::TryFrom;
@@ -106,7 +106,7 @@ impl KrakenRestAPI {
         result.and_then(unpack_kraken_result)
     }
 
-    /// (Private) Get the balance
+    /// (Private) Get the extended balance
     pub fn get_extended_balance(&self) -> Result<ExtendedBalanceResponse> {
         let result: Result<KrakenResult<ExtendedBalanceResponse>> = self.client.query_private("BalanceEx", Empty {});
         result.and_then(unpack_kraken_result)
@@ -130,11 +130,22 @@ impl KrakenRestAPI {
         result.and_then(unpack_kraken_result)
     }
 
+    /// (Private) Get the list of open orders
+    ///
+    /// Arguments:
+    /// * userref: An optional user-reference to filter the list of open orders by
+    pub fn query_orders(&self, userref: Option<UserRefId>, txid: Vec<TxId>) -> Result<QueryOrdersResponse> {
+        let result: Result<KrakenResult<QueryOrdersResponse>> = self
+            .client
+            .query_private("QueryOrders", QueryOrdersRequest { userref, txid });
+        result.and_then(unpack_kraken_result)
+    }
+
     /// (Private) Cancel order
     ///
     /// Arguments:
     /// * id: A TxId (OR a UserRefId) of order(s) to cancel
-    pub fn cancel_order(&self, id: String) -> Result<CancelOrderResponse> {
+    pub fn cancel_order(&self, id: TxId) -> Result<CancelOrderResponse> {
         let result: Result<KrakenResult<CancelOrderResponse>> = self
             .client
             .query_private("CancelOrder", CancelOrderRequest { txid: id });
